@@ -1,13 +1,10 @@
 package org.example;
-import javax.swing.text.html.Option;
 import java.util.Optional;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 
 public class Main {
@@ -16,48 +13,72 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         Main m = new Main();
-
-
     }
 
     public Main() {
 
         leerFichero();
 
-        System.out.println("----- menores de 25 ---elimine las personas cuyo nombre empiece con la letra A-");
+        System.out.println("----- menores de 25-----");
         personList.stream()
                 .filter(p -> p.getEdad() < 25 && p.getEdad() != 0)
-                .filter(p -> p.getNombre().startsWith("A"))
                 .forEach(p -> System.out.println(p));
 
 
-        System.out.println("-----  las personas cuya ciudades Madrid ----");
-        personList.stream()
-
-                .filter(p -> p.getCiudad().equals("Madrid"))
-                .forEach(p -> System.out.println(p));
-        System.out.println("----- obtener el primer elemento cuya ciudad sea Barcelona ----");
-        personList.stream()
-
-                .filter(p -> p.getCiudad().equals("Barcelona"))
-                .forEach(p -> System.out.println(p));
-
-
-        //Revisar los opcionales
-        if (personList.isEmpty()) {
-            System.out.println("unknown");
-        } else {
-            List<String> cities = new ArrayList<>();
-            for (Person person : personList) {
-                cities.add(person.getCiudad() != null ? person.getCiudad() : "unknown");
+        System.out.println("-----  las personas cuyo nombre empiece con la letra A-");
+        List<Person> filteredPeople = new ArrayList<>();
+        for (Person person : personList) {
+            if (person.getNombre() == null || !person.getNombre().startsWith("A")) {
+                filteredPeople.add(person);
             }
-            System.out.println(cities);
+        }
+        for (Person person : filteredPeople) {
+            System.out.println(person);
         }
 
 
+        System.out.println("-----  la primera  personas cuya ciudad es Madrid ----");
+        Optional<Person> personOption=personList.stream()
+                .filter(p -> p.getCiudad().equals("Madrid"))
+//                .limit(1)
+                .findFirst();
+        if (personOption.isEmpty())
+            System.out.println("No hay personas en madrid");
+        else
+            System.out.println(personOption.get());
+
+       /*
+        List<Person> persons=personList.stream()
+                .filter(p -> p.getCiudad().equals("Madrid"))
+//                .limit(1)
+                .toList();
+        Optional<Person> pOption = getFirstElement(persons);
+        Person p1 = pOption.get();
+        System.out.println("El granador es: "+p1.getNombre());
+
+                //.forEach(p -> System.out.println(p));
+        System.out.println("----- obtener el primer elemento cuya ciudad sea Barcelona ----");
+        personList.stream()
+                .filter(p -> p.getCiudad().equals("Barcelona"))
+                .forEach(p -> System.out.println(p));
+*/
+        System.out.println("-----  la primera  personas cuya ciudad es Barcelona ----");
+        Optional<Person> personOptionB=personList.stream()
+                .filter(p -> p.getCiudad().equals("Barcelona"))
+//                .limit(1)
+                .findFirst();
+        if (personOptionB.isEmpty())
+            System.out.println("No hay personas en Barcelona");
+        else
+            System.out.println(personOptionB.get());
+
+    }
+  /*  Optional<Person> getFirstElement(List<Person> personList)
+    {
+        return  personList.size()==0? Optional.empty():Optional.of(personList.get(0));
     }
 
-
+*/
     //.collect(Collectors.toList());
 
     //listPersonas(filteredPeople);
@@ -85,11 +106,16 @@ public class Main {
                     continue;
                 String[] pers=cadena.split(":");
                 Person person;//= new Person();
-                if (pers.length>2)
-                    person=new Person(pers[0],pers[1],pers[2]);
+                String ciudad = pers[1].isEmpty()?"Unknown":pers[1];
+//                if (ciudad.isEmpty())
+//                    ciudad="unknow";
+                if (pers.length>2) {
 
+                    person = new Person(pers[0], ciudad, pers[2]);
+
+                }
                 else
-                    person=new Person(pers[0],pers[1],"0");
+                    person=new Person(pers[0],ciudad,"0");
                 personList.add(person);
 
 
