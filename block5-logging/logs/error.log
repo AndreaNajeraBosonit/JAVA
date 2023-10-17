@@ -1,0 +1,16 @@
+2023-10-17 12:10:52.777 ERROR [http-nio-8080-exec-1] c.b.b.BlockLoggingApplication - Mensaje a nivel de ERROR
+2023-10-17 12:10:54.507 ERROR [http-nio-8080-exec-2] c.b.b.BlockLoggingApplication - Mensaje a nivel de ERROR
+2023-10-17 12:12:08.594 ERROR [http-nio-8080-exec-4] c.b.b.BlockLoggingApplication - Mensaje a nivel de ERROR
+2023-10-17 12:12:55.835 ERROR [http-nio-8080-exec-2] c.b.b.BlockLoggingApplication - Mensaje a nivel de ERROR
+2023-10-17 12:14:15.868 ERROR [http-nio-8080-exec-1] c.b.b.BlockLoggingApplication - Mensaje a nivel de ERROR
+2023-10-17 12:15:51.682 ERROR [http-nio-8080-exec-1] c.b.b.BlockLoggingApplication - Mensaje a nivel de ERROR
+2023-10-17 12:17:28.956 ERROR [http-nio-8080-exec-2] c.b.b.BlockLoggingApplication - Mensaje a nivel de ERROR
+2023-10-17 12:18:34.582 ERROR [http-nio-8080-exec-1] c.b.b.BlockLoggingApplication - Mensaje a nivel de ERROR
+2023-10-17 12:20:27.336 ERROR [http-nio-8080-exec-2] c.b.b.BlockLoggingApplication - Mensaje a nivel de ERROR
+2023-10-17 12:22:34.372 ERROR [http-nio-8080-exec-2] c.b.b.BlockLoggingApplication - Mensaje a nivel de ERROR
+2023-10-17 12:26:56.432 ERROR [http-nio-8080-exec-1] c.b.b.BlockLoggingApplication - Mensaje a nivel de ERROR
+2023-10-17 12:27:23.992 ERROR [http-nio-8080-exec-1] c.b.b.BlockLoggingApplication - Mensaje a nivel de ERROR
+2023-10-17 12:28:27.803 ERROR [http-nio-8080-exec-1] c.b.b.BlockLoggingApplication - Mensaje a nivel de ERROR
+2023-10-17 12:29:10.296 ERROR [http-nio-8080-exec-4] c.b.b.BlockLoggingApplication - Mensaje a nivel de ERROR
+2023-10-17 12:29:59.677 ERROR [http-nio-8080-exec-2] c.b.b.BlockLoggingApplication - Mensaje a nivel de ERROR
+2023-10-17 12:30:42.839 ERROR [http-nio-8080-exec-1] c.b.b.BlockLoggingApplication - Mensaje a nivel de ERROR
