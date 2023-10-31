@@ -2,28 +2,25 @@ package block7crudvalidation.domain;
 
 import block7crudvalidation.controller.dto.PersonInputDto;
 import block7crudvalidation.controller.dto.PersonOutputDto;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
 import java.util.Date;
 
 @Entity
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Person {
     @Id
     @GeneratedValue
-    int id;
+    Long idPerson;
 
  //   @NotNull(message = "Usuario no puede se nulo ")
    // @Length(max = 10, message = "Longitud de usuario no puede ser superior a 10 caracteres")
@@ -53,9 +50,15 @@ public class Person {
 
     Date termination_date;
 
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "person")
+    Profesor profesor;
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "person")
+    Student student;
+
+
 
     public Person(PersonInputDto personInputDto) {
-        this.id = personInputDto.getId();
+        this.idPerson = personInputDto.getId();
         this.usuario = personInputDto.getUsuario();
         this.password = personInputDto.getPassword();
         this.name = personInputDto.getName();
@@ -71,8 +74,9 @@ public class Person {
     }
 
     public PersonOutputDto personToPersonOutputDto() {
+
         return new PersonOutputDto(
-                this.id,
+                this.idPerson,
                 this.usuario,
                 this.password,
                 this.name,
@@ -83,10 +87,14 @@ public class Person {
                 this.active,
                 this.created_date,
                 this.imagen_url,
-                this.termination_date
+                this.termination_date,
+                this.profesor==null?null: profesor.getIdProfesor(),
+                this.student==null?null:student.getIdStudent()
+                );
+
+        //
 
 
-        );
 
     }
 }

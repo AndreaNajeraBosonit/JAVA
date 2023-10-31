@@ -1,8 +1,5 @@
 package block7crudvalidation.controller.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
@@ -11,7 +8,7 @@ import java.util.Date;
 
 
 public class PersonInputDto {
-    int id;
+    Long idPerson;
     String usuario;
     String password;
     String name;
@@ -23,9 +20,12 @@ public class PersonInputDto {
     Date created_date;
     String imagen_url;
     Date termination_date;
+ boolean esProfesor;
+     boolean esStudent;
 
-    public PersonInputDto(int id, String usuario, String password, String name, String surname, String company_email, String personal_email, String city, Boolean active, Date created_date, String imagen_url, Date termination_date) {
-        this.id = id;
+
+    public PersonInputDto(Long idPerson, String usuario, String password, String name, String surname, String company_email, String personal_email, String city, Boolean active, Date created_date, String imagen_url, Date termination_date) {
+        this.idPerson = idPerson;
         this.usuario = usuario;
         this.password = password;
         this.name = name;
@@ -39,8 +39,15 @@ public class PersonInputDto {
         this.termination_date = termination_date;
     }
 
-    public int getId() {
-        return id;
+    public boolean isEsProfesor() {
+        return esProfesor;
+    }
+
+    public boolean isEsStudent() {
+        return esStudent;
+    }
+    public Long getId() {
+        return idPerson;
     }
 
     public String getUsuario() {
@@ -87,8 +94,8 @@ public class PersonInputDto {
         return termination_date;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setId(Long idPerson) {
+        this.idPerson = idPerson;
     }
 
     public void setUsuario(String usuario) {
@@ -134,4 +141,6 @@ public class PersonInputDto {
     public void setTermination_date(Date termination_date) {
         this.termination_date = termination_date;
     }
+
+
 }

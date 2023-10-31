@@ -1,12 +1,15 @@
 package block7crudvalidation.controller.dto;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Date;
 @NoArgsConstructor
-
+@Setter
+@Getter
 public class PersonOutputDto {
-    int id;
+    Long idPerson;
     String usuario;
     String password;
     String name;
@@ -18,14 +21,14 @@ public class PersonOutputDto {
     Date created_date;
     String imagen_url;
     Date termination_date;
+    Long idProfesor;
+    Long idStudent;
 
-    public void setUsuario(String usuario) {
+    //ProfesorOutputDto profesorOutputDto;
+    public PersonOutputDto(Long idPerson, String usuario, String password, String name, String surname, String company_email, String personal_email, String city, Boolean active, Date created_date, String imagen_url, Date termination_date, Long idProfesor,Long idStudent) {
+
+        this.idPerson = idPerson;
         this.usuario = usuario;
-    }
-
-    public PersonOutputDto(int id, String usuario, String password, String name, String surname, String company_email, String personal_email, String city, Boolean active, Date created_date, String imagen_url, Date termination_date) {
-        this.id = id;
-        this.usuario=usuario;
         this.password = password;
         this.name = name;
         this.surname = surname;
@@ -36,97 +39,7 @@ public class PersonOutputDto {
         this.created_date = created_date;
         this.imagen_url = imagen_url;
         this.termination_date = termination_date;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public String getCompany_email() {
-        return company_email;
-    }
-
-    public String getPersonal_email() {
-        return personal_email;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public Boolean getActive() {
-        return active;
-    }
-
-    public Date getCreated_date() {
-        return created_date;
-    }
-
-    public String getImagen_url() {
-        return imagen_url;
-    }
-
-    public Date getTermination_date() {
-        return termination_date;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public void setCompany_email(String company_email) {
-        this.company_email = company_email;
-    }
-
-    public void setPersonal_email(String personal_email) {
-        this.personal_email = personal_email;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
-    }
-
-    public void setCreated_date(Date created_date) {
-        this.created_date = created_date;
-    }
-
-    public void setImagen_url(String imagen_url) {
-        this.imagen_url = imagen_url;
-    }
-
-    public void setTermination_date(Date termination_date) {
-        this.termination_date = termination_date;
-    }
-
-    public String getUsuario() {
-        return usuario;
+        this.idProfesor=idProfesor;
+        this.idStudent=idStudent;
     }
 }

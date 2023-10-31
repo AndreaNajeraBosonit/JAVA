@@ -10,11 +10,11 @@ import java.util.List;
 public interface PersonService {
 
     PersonOutputDto addPerson(PersonInputDto person) throws Exception;
-    PersonOutputDto getPersonById(int id);
+    PersonOutputDto getPersonById(Long idPerson);
 
     List<PersonOutputDto> getAllPerson();
     List<PersonOutputDto> getPersonsByUsuario(String usuario);
-    String deletePersonById (int id);
+    String deletePersonById (Long idPerson);
 
 
 
