@@ -2,33 +2,26 @@
 
 
 package block7crudvalidation.application;
+import block7crudvalidation.Feign.ProfesorFeignClient;
 import block7crudvalidation.controller.dto.PersonInputDto;
 import block7crudvalidation.controller.dto.PersonOutputDto;
-import block7crudvalidation.controller.dto.StudentOutputDto;
-import block7crudvalidation.domain.Asignatura;
+import block7crudvalidation.controller.dto.ProfesorOutputDto;
 import block7crudvalidation.domain.Person;
 import block7crudvalidation.domain.Profesor;
 import block7crudvalidation.domain.Student;
-import block7crudvalidation.exceptions.CustomError;
-import block7crudvalidation.exceptions.EntityNotFoundException;
 import block7crudvalidation.exceptions.UnprocessableEntityException;
 import block7crudvalidation.repository.PersonRepository;
 import block7crudvalidation.repository.ProfesorRepository;
 import block7crudvalidation.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.client.RestTemplate;
 
-import java.io.UncheckedIOException;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
 @Service
 public class PersonServiceImpl  implements PersonService {
 
@@ -38,6 +31,9 @@ public class PersonServiceImpl  implements PersonService {
     ProfesorRepository profesorRepository;
     @Autowired
     StudentRepository studentRepository;
+    @Autowired
+    RestTemplate restTemplate;
+
 
     @Override
 
@@ -136,7 +132,5 @@ public class PersonServiceImpl  implements PersonService {
             return "No se encontró ninguna persona con el ID " + idPerson;
         }
     }
-
-
 
 }

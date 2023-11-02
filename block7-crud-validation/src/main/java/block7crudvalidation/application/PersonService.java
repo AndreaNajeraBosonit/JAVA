@@ -2,8 +2,7 @@ package block7crudvalidation.application;
 
 import block7crudvalidation.controller.dto.PersonInputDto;
 import block7crudvalidation.controller.dto.PersonOutputDto;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import block7crudvalidation.controller.dto.ProfesorOutputDto;
 
 import java.util.List;
 
@@ -15,7 +14,5 @@ public interface PersonService {
     List<PersonOutputDto> getAllPerson();
     List<PersonOutputDto> getPersonsByUsuario(String usuario);
     String deletePersonById (Long idPerson);
-
-
 
 }

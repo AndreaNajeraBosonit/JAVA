@@ -1,11 +1,10 @@
 package block7crudvalidation.controller;
 
+import block7crudvalidation.Feign.ProfesorFeignClient;
 import block7crudvalidation.application.PersonService;
-import block7crudvalidation.application.PersonServiceImpl;
 import block7crudvalidation.controller.dto.PersonInputDto;
 import block7crudvalidation.controller.dto.PersonOutputDto;
-import block7crudvalidation.controller.dto.StudentOutputDto;
-import block7crudvalidation.exceptions.UnprocessableEntityException;
+import block7crudvalidation.controller.dto.ProfesorOutputDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
@@ -13,17 +12,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 @RestController
 @RequestMapping("/person")
-public class Controller {
+public class ControllerPersona {
+
     @Autowired
     PersonService personService;
+    @Autowired
+    RestTemplate restTemplate;
+
+    @Autowired
+    ProfesorFeignClient profesorFeignClient;
+
+//    public Controller(RestTemplate restTemplate) {
+//        this.restTemplate = restTemplate;
+//    }
+
+
 
     @GetMapping("/{idPerson}")
     public ResponseEntity<PersonOutputDto> getPersonById(@PathVariable Long idPerson) {
@@ -84,5 +94,27 @@ public class Controller {
    }
 
 
+  // USANDO RESTTEMPLATE  se utiliza por si hay dos apis y quieres juntar las dos en una misma consulta en un nuevo localhost
+   @GetMapping("/profesorRT/{id}")
+  public ProfesorOutputDto getProfesor(@PathVariable int id) {
+        ResponseEntity<ProfesorOutputDto> respuesta= restTemplate.getForEntity("http://localhost:8081/profesor/"+id, ProfesorOutputDto.class);
+        ProfesorOutputDto profesorOutputDto= respuesta.getBody();
+       return profesorOutputDto;
+//        // Llama al servicio del profesor en el puerto 8081 usando RestTemplate
+////        String profesorServiceUrl = "http://localhost:8081/profesor/" + id;
+////        return restTemplate.getForObject(profesorServiceUrl, ProfesorOutputDto.class);
     }
+
+    //Feign
+    @GetMapping("/profesor/{idProfesor}")
+    public   ProfesorOutputDto getProfesor(@PathVariable("idProfesor") Long idProfesor){
+        return profesorFeignClient.getProfesor(idProfesor);
+    }
+
+
+
+
+    }
+
+
 
