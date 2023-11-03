@@ -1,7 +1,0 @@
-# Usa una imagen base de PostgreSQL
-FROM postgres:latest
-
-# Configura el usuario, contraseña y base de datos
-ENV POSTGRES_USER=postgres
-ENV POSTGRES_PASSWORD=postgres
-ENV POSTGRES_DB=test
