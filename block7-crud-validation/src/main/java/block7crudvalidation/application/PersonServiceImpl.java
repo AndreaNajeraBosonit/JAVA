@@ -1,11 +1,9 @@
-
-
-
 package block7crudvalidation.application;
-import block7crudvalidation.Feign.ProfesorFeignClient;
+
+
+import block7crudvalidation.application.PersonService;
 import block7crudvalidation.controller.dto.PersonInputDto;
 import block7crudvalidation.controller.dto.PersonOutputDto;
-import block7crudvalidation.controller.dto.ProfesorOutputDto;
 import block7crudvalidation.domain.Person;
 import block7crudvalidation.domain.Profesor;
 import block7crudvalidation.domain.Student;
@@ -16,7 +14,6 @@ import block7crudvalidation.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -60,6 +57,7 @@ public class PersonServiceImpl  implements PersonService {
 
 
 
+
         return personRepository.save(new Person(person))
                 .personToPersonOutputDto();
 
@@ -76,10 +74,17 @@ public class PersonServiceImpl  implements PersonService {
 
     @Override
     public List<PersonOutputDto> getAllPerson() {
-        List<Person> person = personRepository.findAll();
-        return person.stream()
-                .map(Person::personToPersonOutputDto)
-                .collect(Collectors.toList());
+        try {
+            List<Person> person = personRepository.findAll();
+            return person.stream()
+                    .map(Person::personToPersonOutputDto)
+                    .collect(Collectors.toList());
+        }
+        catch (Exception e){
+            throw new RuntimeException("Error al obtener la lista de personas.", e);
+
+        }
+
     }
 
     @Override
@@ -132,5 +137,7 @@ public class PersonServiceImpl  implements PersonService {
             return "No se encontró ninguna persona con el ID " + idPerson;
         }
     }
+
+
 
 }

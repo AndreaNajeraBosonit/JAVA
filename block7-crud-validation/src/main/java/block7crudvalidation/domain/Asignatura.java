@@ -23,7 +23,7 @@ public class Asignatura {
 
     @ManyToMany
     @JoinColumn(name = "idStudent")
-    List<Student> student;
+    List<Student> student = new ArrayList<>();
 
     String asignatura;
 

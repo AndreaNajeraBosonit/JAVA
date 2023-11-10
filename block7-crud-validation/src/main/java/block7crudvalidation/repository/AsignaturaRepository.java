@@ -13,3 +13,4 @@ public interface AsignaturaRepository  extends JpaRepository<Asignatura, Long>  
 
 
 }
+

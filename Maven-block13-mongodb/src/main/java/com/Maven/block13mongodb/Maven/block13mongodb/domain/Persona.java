@@ -1,20 +1,25 @@
-package block7crudvalidation.domain;
+package com.Maven.block13mongodb.Maven.block13mongodb.domain;
 
-import block7crudvalidation.controller.dto.PersonInputDto;
-import block7crudvalidation.controller.dto.PersonOutputDto;
-import jakarta.persistence.*;
-import lombok.*;
-
+import com.Maven.block13mongodb.Maven.block13mongodb.controller.dto.PersonInputDto;
+import com.Maven.block13mongodb.Maven.block13mongodb.controller.dto.PersonOutputDto;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.Date;
 
-@Entity
+@Document(collection = "personas")
+
+
+
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Person {
+public class Persona {
     @Id
-    @GeneratedValue
     Long idPerson;
 
  //   @NotNull(message = "Usuario no puede se nulo ")
@@ -45,14 +50,10 @@ public class Person {
 
     Date termination_date;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "person")
-    Profesor profesor;
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "person")
-    Student student;
 
 
 
-    public Person(PersonInputDto personInputDto) {
+    public Persona(PersonInputDto personInputDto) {
         this.idPerson = personInputDto.getId();
         this.usuario = personInputDto.getUsuario();
         this.password = personInputDto.getPassword();
@@ -68,8 +69,6 @@ public class Person {
 
     }
 
-
-
     public PersonOutputDto personToPersonOutputDto() {
 
         return new PersonOutputDto(
@@ -84,16 +83,13 @@ public class Person {
                 this.active,
                 this.created_date,
                 this.imagen_url,
-                this.termination_date,
-                this.profesor==null?null: profesor.getIdProfesor(),
-                this.student==null?null:student.getIdStudent()
+                this.termination_date
+
                 );
 
-        //
+
 
 
 
     }
 }
-
-

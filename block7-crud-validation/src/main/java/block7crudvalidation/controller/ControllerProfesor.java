@@ -1,7 +1,6 @@
 package block7crudvalidation.controller;
 
 import block7crudvalidation.application.ProfesorService;
-import block7crudvalidation.application.ProfesorServiceImpl;
 import block7crudvalidation.controller.dto.ProfesorInputDto;
 import block7crudvalidation.controller.dto.ProfesorOutputDto;
 import org.springframework.beans.factory.annotation.Autowired;

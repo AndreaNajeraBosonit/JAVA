@@ -1,11 +1,8 @@
 package block7crudvalidation.domain;
 
-import block7crudvalidation.controller.dto.PersonOutputDto;
 import block7crudvalidation.controller.dto.ProfesorInputDto;
 import block7crudvalidation.controller.dto.ProfesorOutputDto;
-import com.fasterxml.jackson.core.sym.Name;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.List;
@@ -37,6 +34,8 @@ public class Profesor {
                 this.branch = profesorInputDto.getBranch();
                 this.setStudents(students);
         }
+
+
 
         public ProfesorOutputDto profesorToProfesorOutputDto() {
                 return new ProfesorOutputDto(

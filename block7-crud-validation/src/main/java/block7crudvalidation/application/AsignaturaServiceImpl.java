@@ -2,8 +2,6 @@ package block7crudvalidation.application;
 
 import block7crudvalidation.controller.dto.*;
 import block7crudvalidation.domain.Asignatura;
-import block7crudvalidation.domain.Person;
-import block7crudvalidation.domain.Profesor;
 import block7crudvalidation.domain.Student;
 import block7crudvalidation.repository.AsignaturaRepository;
 import block7crudvalidation.repository.PersonRepository;
@@ -12,10 +10,8 @@ import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -36,10 +32,11 @@ public class AsignaturaServiceImpl  implements AsignaturaService{
     @Override
     public List<AsignaturaOutputDto> getAllAsignatura() {
         List<Asignatura> asignatura = asignaturaRepository.findAll();
-         return asignatura.stream()
+        return asignatura.stream()
                 .map(Asignatura::asignaturaToAsignaturaOutputDto)
                 .collect(Collectors.toList());
     }
+
 
     @Override
     public AsignaturaOutputDto getAsignaturaById(Long idStudent) {
@@ -57,16 +54,28 @@ public class AsignaturaServiceImpl  implements AsignaturaService{
             return new ArrayList<>();
         }
     }
+
     @Override
     public AsignaturaOutputDto addAsignatura(AsignaturaInputDto asignaturaInputDto) {
         List<Student> studentList = getStudentsFromIds(asignaturaInputDto.getStudent());
+
+        // Verificar si la lista student está inicializada
+        if (studentList == null) {
+            studentList = new ArrayList<>();
+        }
+
         Asignatura asignatura = new Asignatura(asignaturaInputDto);
         asignatura.setStudent(studentList);
         AsignaturaOutputDto asignaturaOutputDto = asignaturaRepository.save(asignatura).asignaturaToAsignaturaOutputDto();
-        studentList.forEach(student -> {
-            student.getAsignaturas().add(asignatura);
-            studentRepository.save(student);
-        });
+
+        // Verificar si la lista student tiene elementos antes de usar forEach
+        if (studentList != null) {
+            studentList.forEach(student -> {
+                student.getAsignaturas().add(asignatura);
+                studentRepository.save(student);
+            });
+        }
+
         return asignaturaOutputDto;
     }
 
