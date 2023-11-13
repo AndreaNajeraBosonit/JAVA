@@ -32,6 +32,8 @@ public class ProfesorServiceImpl implements ProfesorService {
     @Autowired
     ModelMapper modelMapper;
 
+
+
     @Override
     public ProfesorOutputDto addProfesor( @RequestBody ProfesorInputDto profesor) {
         Person person = personRepository.findById(profesor.getIdPerson()).orElseThrow(() -> new EntityNotFoundException("No se encontro la persona con Id " + profesor.getIdPerson()));
@@ -45,9 +47,34 @@ public class ProfesorServiceImpl implements ProfesorService {
         return profesorRepository.save(profesor1).profesorToProfesorOutputDto();
     }
 
+//    @Override
+//    public ProfesorOutputDto addProfesor(@RequestBody ProfesorInputDto profesorInputDto) {
+//        Person person = personRepository.findById(profesorInputDto.getIdPerson())
+//                .orElseThrow(() -> new EntityNotFoundException("No se encontró la persona con Id " + profesorInputDto.getIdPerson()));
+//
+//        Optional<Profesor> profesorAux = profesorRepository.findByPerson(person);
+//
+//        if (profesorAux.isPresent()) {
+//            throw new EntityNotFoundException("Esa persona ya está asociada con un profesor");
+//        }
+//
+//        // Crear una nueva instancia de Profesor
+//        Profesor profesor = new Profesor(profesorInputDto);
+//
+//        // Establecer la relación con la persona
+//        profesor.setPerson(person);
+//
+//        // Guardar el profesor en el repositorio
+//        Profesor profesorGuardado = profesorRepository.save(profesor);
+//
+//        // Convertir y devolver el resultado
+//        return profesorGuardado.profesorToProfesorOutputDto();
+//    }
+
     //Peticion http://localhost:8080/profesor/1
     @Override
     public ProfesorOutputDto getProfesorById(Long idProfesor) {
+
         return profesorRepository.findById(idProfesor).orElseThrow()
                 .profesorToProfesorOutputDto();
     }

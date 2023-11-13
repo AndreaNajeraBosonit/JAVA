@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.Objects;
+
 @NoArgsConstructor
 @Setter
 @Getter
@@ -42,4 +44,8 @@ public class PersonOutputDto {
         this.idProfesor=idProfesor;
         this.idStudent=idStudent;
     }
+
+    // En la clase PersonOutputDto
+
+
 }

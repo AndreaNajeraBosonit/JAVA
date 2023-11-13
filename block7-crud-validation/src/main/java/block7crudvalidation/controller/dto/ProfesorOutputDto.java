@@ -1,10 +1,9 @@
 package block7crudvalidation.controller.dto;
 
+import block7crudvalidation.domain.Person;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 
 @AllArgsConstructor
@@ -16,5 +15,6 @@ public class ProfesorOutputDto {
     Long idPerson;
     String coments;
     String branch;
+
 
 }

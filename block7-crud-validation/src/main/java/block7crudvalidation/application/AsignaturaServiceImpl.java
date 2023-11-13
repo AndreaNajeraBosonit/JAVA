@@ -1,8 +1,10 @@
 package block7crudvalidation.application;
 
-import block7crudvalidation.controller.dto.*;
+import block7crudvalidation.controller.dto.AsignaturaInputDto;
+import block7crudvalidation.controller.dto.AsignaturaOutputDto;
 import block7crudvalidation.domain.Asignatura;
 import block7crudvalidation.domain.Student;
+import block7crudvalidation.exceptions.UnprocessableEntityException;
 import block7crudvalidation.repository.AsignaturaRepository;
 import block7crudvalidation.repository.PersonRepository;
 import block7crudvalidation.repository.StudentRepository;
@@ -17,7 +19,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class AsignaturaServiceImpl  implements AsignaturaService{
+public class AsignaturaServiceImpl implements AsignaturaService {
     @Autowired
     AsignaturaRepository asignaturaRepository;
 
@@ -34,23 +36,25 @@ public class AsignaturaServiceImpl  implements AsignaturaService{
         List<Asignatura> asignatura = asignaturaRepository.findAll();
         return asignatura.stream()
                 .map(Asignatura::asignaturaToAsignaturaOutputDto)
-                .collect(Collectors.toList());
+                .toList(); //collect(Collectors.toList());
     }
 
 
     @Override
     public AsignaturaOutputDto getAsignaturaById(Long idStudent) {
-        Asignatura asignatura = asignaturaRepository.findById(idStudent).orElseThrow(() ->{throw new EntityNotFoundException("No se encontró el Asignatura con ID: " + idStudent); });
+        Asignatura asignatura = asignaturaRepository.findById(idStudent).orElseThrow(() -> {
+            throw new EntityNotFoundException("No se encontró el Asignatura con ID: " + idStudent);
+        });
         return asignatura.asignaturaToAsignaturaOutputDto();
     }
 
     public List<Student> getStudentsFromIds(List<Long> studentIds) {
-        if(studentIds != null) {
+        if (studentIds != null) {
             return studentIds.stream()
                     .map(studentId -> studentRepository.findById(studentId)
                             .orElseThrow(() -> new EntityNotFoundException("No se encontró el estudiante con Id " + studentId)))
                     .collect(Collectors.toList());
-        }else{
+        } else {
             return new ArrayList<>();
         }
     }
@@ -62,6 +66,9 @@ public class AsignaturaServiceImpl  implements AsignaturaService{
         // Verificar si la lista student está inicializada
         if (studentList == null) {
             studentList = new ArrayList<>();
+        }
+        if (studentList.isEmpty()) {
+            throw new UnprocessableEntityException("No se encontraron estudiantes con los IDs proporcionados");
         }
 
         Asignatura asignatura = new Asignatura(asignaturaInputDto);
@@ -81,25 +88,16 @@ public class AsignaturaServiceImpl  implements AsignaturaService{
 
     @Override
     public List<AsignaturaOutputDto> getAsignaturaStudentId(Long idStudent) {
-        Student student = studentRepository.findById(idStudent).orElseThrow(() ->{throw new EntityNotFoundException("No se encontró el estudiante "); });
-        return  student.getAsignaturas().stream()
+        Student student = studentRepository.findById(idStudent).orElseThrow(() -> {
+            throw new EntityNotFoundException("No se encontró el estudiante ");
+        });
+        return student.getAsignaturas().stream()
 
                 .map(Asignatura::asignaturaToAsignaturaOutputDto)
                 .collect(Collectors.toList());
 
     }
-/*
-    @Override
-    public String deleteAsignaturaById(Long idAsignatura) {
-        if (asignaturaRepository.existsById(idAsignatura)) {
-            asignaturaRepository.deleteById(idAsignatura);
-            return "La Asignatura con id " + idAsignatura + " se ha eliminado correctamente";
-        } else {
-            return "la Asignatura con id  " + idAsignatura + " no ese encuentra";
-        }
 
-    }
-    */
 
 
     @Override
@@ -122,7 +120,6 @@ public class AsignaturaServiceImpl  implements AsignaturaService{
             return "No se encontró ninguna asignatura con el ID " + idAsignatura;
         }
     }
-
 
 
 }

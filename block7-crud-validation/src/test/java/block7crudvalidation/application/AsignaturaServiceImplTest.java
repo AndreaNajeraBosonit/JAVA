@@ -15,6 +15,7 @@ import block7crudvalidation.domain.Asignatura;
 
 import block7crudvalidation.domain.Person;
 import block7crudvalidation.domain.Student;
+import block7crudvalidation.exceptions.EntityNotFoundException;
 import block7crudvalidation.exceptions.UnprocessableEntityException;
 import block7crudvalidation.repository.AsignaturaRepository;
 import block7crudvalidation.repository.StudentRepository;
@@ -51,6 +52,59 @@ public class AsignaturaServiceImplTest {
 
         // Assert
         assertNotNull(result);
+    }
+    @Test
+    public void testDeleteAsignaturaByIdWithAssociatedStudents() {
+        // Arrange
+        Long idAsignatura = 1L;
+        Asignatura asignatura = new Asignatura(idAsignatura, new ArrayList<>(), "Matemáticas", "", new Date(), new Date());
+
+        // Configura el comportamiento esperado del repositorio mock
+        when(asignaturaRepository.findById(idAsignatura)).thenReturn(Optional.of(asignatura));
+
+        Student student1 = new Student();
+        Student student2 = new Student();
+        List<Student> estudiantesAsociados = Arrays.asList(student1, student2);
+        when(studentRepository.findByAsignaturas(asignatura)).thenReturn(estudiantesAsociados);
+
+        // Act
+        String result = asignaturaService.deleteAsignaturaById(idAsignatura);
+
+        // Assert
+        assertNotNull(result);
+        assertTrue(result.contains("asociaciones con estudiantes han sido eliminadas correctamente."));
+
+        // Verifica que la asignatura se haya eliminado correctamente
+        verify(asignaturaRepository, times(1)).deleteById(idAsignatura);
+
+        // Verifica que se haya llamado a saveAll con la lista correcta de estudiantes asociados
+        verify(studentRepository, times(1)).saveAll(estudiantesAsociados);
+    }
+
+    @Test
+    public void testGetAsignaturaStudentId_ValidStudentId_NoAsignaturasAsociadas() {
+        // Arrange
+        Long validStudentId = 1L; // ID de un estudiante válido sin asignaturas asociadas
+        when(studentRepository.findById(validStudentId)).thenReturn(Optional.of(new Student())); // Simula un estudiante sin asignaturas
+
+        // Act
+        List<AsignaturaOutputDto> result = asignaturaService.getAsignaturaStudentId(validStudentId);
+
+        // Assert
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+    @Test
+    public void testGetAsignaturaStudentId_InternalException() {
+        // Arrange
+        Long validStudentId = 1L;
+        when(studentRepository.findById(validStudentId)).thenReturn(Optional.of(new Student()));
+        when(studentRepository.findById(validStudentId).get().getAsignaturas()).thenThrow(new RuntimeException("Error interno"));
+
+        // Act y Assert
+        assertThrows(RuntimeException.class, () -> {
+            asignaturaService.getAsignaturaStudentId(validStudentId);
+        });
     }
 
 
@@ -144,21 +198,22 @@ public class AsignaturaServiceImplTest {
         assertEquals(initialDate, asignaturaOutputDto.getInitial_date());
         assertEquals(finishDate, asignaturaOutputDto.getFinish_date());
     }
-
     @Test
-    public void testAddAsignatura() {
+    public void testAddAsignatura_ValidInput() {
         // Arrange
         AsignaturaInputDto inputDto = new AsignaturaInputDto();
-        inputDto.setStudent(new ArrayList<>()); // Puedes añadir estudiantes a la lista si es necesario
+        inputDto.setAsignatura("Matemáticas");
+        inputDto.setComents("Comentarios sobre la asignatura");
+        inputDto.setInitial_date(new Date());
+        inputDto.setFinish_date(new Date());
+        inputDto.setStudent(Arrays.asList(1L, 2L));
 
-        List<Student> mockStudents = new ArrayList<>();
-        Student student1 = new Student(/* datos del estudiante 1 */);
-        Student student2 = new Student(/* datos del estudiante 2 */);
-        mockStudents.add(student1);
-        mockStudents.add(student2);
+        List<Student> studentList = Arrays.asList(new Student(), new Student());
 
-        when(studentRepository.findById(anyLong())).thenReturn(Optional.of(new Student(/* datos del estudiante */)));
-        when(asignaturaRepository.save(any(Asignatura.class))).thenReturn(new Asignatura(/* datos de la asignatura guardada */));
+        // Configurar comportamiento esperado del repositorio mock
+        when(studentRepository.findById(1L)).thenReturn(Optional.of(studentList.get(0)));
+        when(studentRepository.findById(2L)).thenReturn(Optional.of(studentList.get(1)));
+        when(asignaturaRepository.save(any(Asignatura.class))).thenReturn(new Asignatura());
 
         // Act
         AsignaturaOutputDto result = asignaturaService.addAsignatura(inputDto);
@@ -167,5 +222,75 @@ public class AsignaturaServiceImplTest {
         assertNotNull(result);
         // Realiza más aserciones según el comportamiento específico que esperas en tu aplicación
     }
+
+    @Test
+    public void testAddAsignatura_EmptyStudentList() {
+        // Arrange
+        AsignaturaInputDto inputDto = new AsignaturaInputDto();
+        inputDto.setStudent(new ArrayList<>());
+
+        // Act & Assert
+        assertThrows(UnprocessableEntityException.class, () -> asignaturaService.addAsignatura(inputDto));
     }
+    @Test
+    public void testAddAsignatura_NullStudentList() {
+        // Arrange
+        AsignaturaInputDto inputDto = new AsignaturaInputDto();
+        inputDto.setStudent(null);
+
+        // Act & Assert
+        assertThrows(UnprocessableEntityException.class, () -> asignaturaService.addAsignatura(inputDto));
+    }
+
+    @Test
+    public void testAddAsignatura_SaveReturnsNull() {
+        // Arrange
+        AsignaturaInputDto inputDto = new AsignaturaInputDto();
+        inputDto.setStudent(Arrays.asList(1L));
+
+        // Configurar comportamiento esperado del repositorio mock
+        when(studentRepository.findById(1L)).thenReturn(Optional.of(new Student()));
+        when(asignaturaRepository.save(any(Asignatura.class))).thenReturn(null);
+
+        // Act & Assert
+        assertThrows(RuntimeException.class, () -> asignaturaService.addAsignatura(inputDto));
+    }
+    @Test
+    public void testGetAsignaturaStudentId_ValidStudentId() {
+        // Arrange
+        Long idStudent = 1L;
+        List<Asignatura> asignaturas = new ArrayList<>();
+        asignaturas.add(new Asignatura(/* configurar según sea necesario */));
+        asignaturas.add(new Asignatura(/* configurar según sea necesario */));
+
+        Student student = new Student();
+        student.setIdStudent(idStudent);
+        student.setAsignaturas(asignaturas);
+
+        // Configurar el comportamiento esperado del repositorio mock
+        when(studentRepository.findById(idStudent)).thenReturn(Optional.of(student));
+
+        // Act
+        List<AsignaturaOutputDto> result = asignaturaService.getAsignaturaStudentId(idStudent);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(asignaturas.size(), result.size());
+        // Puedes realizar más aserciones según tus necesidades específicas
+    }
+    @Test
+    public void testGetAsignaturaStudentId_InvalidStudentId() {
+        // Arrange
+        Long invalidStudentId = 999L; // Un ID de estudiante que no existe
+
+        // Act y Assert
+        assertThrows(jakarta.persistence.EntityNotFoundException.class, () -> {
+            asignaturaService.getAsignaturaStudentId(invalidStudentId);
+        });
+    }
+
+    // Agrega más casos de prueba según los escenarios que desees cubrir
+}
+
+
 

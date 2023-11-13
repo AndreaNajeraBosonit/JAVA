@@ -53,11 +53,6 @@ public class PersonServiceImpl  implements PersonService {
         if (!matcher.matches()) {
             throw new UnprocessableEntityException("Correo electrónico no válido");
         }
-
-
-
-
-
         return personRepository.save(new Person(person))
                 .personToPersonOutputDto();
 

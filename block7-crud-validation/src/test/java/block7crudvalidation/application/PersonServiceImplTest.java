@@ -62,7 +62,39 @@ public class PersonServiceImplTest {
             personService.addPerson(personInputDto);
         });
     }
+    @Test
+    public void testAddPerson_NullUsuario() {
+        // Arrange
+        PersonInputDto personInputDto = new PersonInputDto();
+        personInputDto.setUsuario(null);
 
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> {
+            personService.addPerson(personInputDto);
+        });
+    }
+    @Test
+    public void testAddPerson_LongUsuario() {
+        // Arrange
+        PersonInputDto personInputDto = new PersonInputDto();
+        personInputDto.setUsuario("usuarioDemasiadoLargo"); // más de 10 caracteres
+
+        // Act & Assert
+        assertThrows(Exception.class, () -> {
+            personService.addPerson(personInputDto);
+        });
+    }
+    @Test
+    public void testAddPerson_LongEmail() {
+        // Arrange
+        PersonInputDto personInputDto = new PersonInputDto();
+        personInputDto.setPersonal_email("correo@dominio.com".repeat(4)); // más de 30 caracteres
+
+        // Act & Assert
+        assertThrows(Exception.class, () -> {
+            personService.addPerson(personInputDto);
+        });
+    }
     @Test
     public void testDeletePersonById() {
         // Configurar el comportamiento del repositorio para devolver una persona existente
@@ -76,22 +108,7 @@ public class PersonServiceImplTest {
         // Verificar el resultado del método
         assertEquals("La persona con ID 1 y sus asociaciones con Estudiante y Profesor han sido eliminadas correctamente.", result);
     }
-/*
-    @Test
-    public void testGetById() throws Exception {
-        // Arrange
-        when(personRepository.findById(1L)).thenReturn(java.util.Optional.empty());
 
-        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> {
-            personService.getPersonById(1L);
-        });
-
-
-        String actualMessage = exception.getMessage();
-
-    }
-
-*/
 
     @Test
     public void testGetAllPerson() {
@@ -136,5 +153,35 @@ public class PersonServiceImplTest {
         // Assert
         // Expects an IllegalArgumentException to be thrown when usuario is null
     }
+
+    @Test
+    public void testGetPersonById_ExistingPerson() {
+        // Arrange
+        Long idPerson = 1L;
+        Person person = new Person(/* Initialize the person with necessary data */);
+        when(personRepository.findById(idPerson)).thenReturn(Optional.of(person));
+
+        // Act
+        PersonOutputDto expectedOutputDto = person.personToPersonOutputDto();
+        PersonOutputDto actualOutputDto = personService.getPersonById(idPerson);
+
+        // Assert
+        assertEquals(expectedOutputDto.getIdPerson(), actualOutputDto.getIdPerson());
+        assertEquals(expectedOutputDto.getName(), actualOutputDto.getName());
+        // ... continuar con otros campos
+    }
+
+    @Test
+    public void testGetPersonById_NonExistingPerson() {
+        // Arrange
+        Long idPerson = 1L;
+        when(personRepository.findById(idPerson)).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(NoSuchElementException.class, () -> {
+            personService.getPersonById(idPerson);
+        });
+    }
+
 }
 

@@ -41,6 +41,7 @@ public class Asignatura {
     }
 
 
+
     public AsignaturaOutputDto asignaturaToAsignaturaOutputDto() {
         List<Long> longList = new ArrayList<>();
         this.student.forEach(student -> longList.add(student.idStudent));

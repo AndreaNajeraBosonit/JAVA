@@ -5,6 +5,7 @@ import block7crudvalidation.controller.dto.ProfesorOutputDto;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -29,23 +30,50 @@ public class Profesor {
 
         String branch;
 
-        public Profesor(ProfesorInputDto profesorInputDto) {
+        public Profesor(ProfesorInputDto profesorInputDto ) {
                 this.coments = profesorInputDto.getComents();
                 this.branch = profesorInputDto.getBranch();
                 this.setStudents(students);
+                this.students = new ArrayList<>(); // Inicializa la lista de estudiantes
+
+        }
+        public void addStudent(Student student) {
+                if (this.students == null) {
+                        this.students = new ArrayList<>();
+                }
+                this.students.add(student);
+        }
+
+        public Profesor(Long idProfesor, Person person) {
+                this.idProfesor = idProfesor;
+
+                // Inicializa otros parámetros
+                this.person = person;
+        }
+
+
+        public Long getIdPerson() {
+                return (person != null) ? person.getIdPerson() : null;
         }
 
 
 
         public ProfesorOutputDto profesorToProfesorOutputDto() {
-                return new ProfesorOutputDto(
-                        this.idProfesor,
-                        this.person.getIdPerson(),
-                        this.coments,
-                        this.branch
-                );
-
+                if (this.person != null) {
+                        return new ProfesorOutputDto(
+                                this.idProfesor,
+                                this.person.getIdPerson(),
+                                this.coments,
+                                this.branch
+                        );
+                } else {
+                        // Manejar el caso en que this.person sea null, posiblemente lanzar una excepción o devolver un valor predeterminado
+                        return new ProfesorOutputDto();
+                }
         }
+
+
+}
 
 
 /*
@@ -55,4 +83,3 @@ public class Profesor {
     branch string [not null] -- Materia principal que imparte. Por ejemplo: Front
 */
 
-}

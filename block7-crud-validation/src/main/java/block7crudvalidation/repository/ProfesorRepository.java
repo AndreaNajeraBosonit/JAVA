@@ -8,4 +8,7 @@ import java.util.Optional;
 
 public interface ProfesorRepository  extends JpaRepository<Profesor, Long> {
     Optional<Profesor> findByPerson(Person Person);
+
+    @Override
+    Profesor save(Profesor profesor);
 }

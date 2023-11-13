@@ -2,42 +2,49 @@ package block7crudvalidation.application;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import block7crudvalidation.controller.dto.ProfesorOutputDto;
 import block7crudvalidation.controller.dto.StudentInputDto;
 import block7crudvalidation.controller.dto.StudentOutputDto;
+import block7crudvalidation.domain.Asignatura;
 import block7crudvalidation.domain.Person;
 import block7crudvalidation.domain.Profesor;
 import block7crudvalidation.domain.Student;
+import block7crudvalidation.exceptions.EntityNotFoundException;
+import block7crudvalidation.repository.AsignaturaRepository;
 import block7crudvalidation.repository.PersonRepository;
 import block7crudvalidation.repository.ProfesorRepository;
 import block7crudvalidation.repository.StudentRepository;
+import java.time.LocalDate;
+import java.util.*;
+
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.modelmapper.ModelMapper;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-@ExtendWith(MockitoExtension.class)
+import java.time.LocalDate;
 
 
 public class StudentServiceImplTest {
 
     @Mock
     private StudentRepository studentRepository;
-
+    @Mock
+    private AsignaturaRepository asignaturaRepository;
     @Mock
     private PersonRepository personRepository;
 
@@ -46,11 +53,11 @@ public class StudentServiceImplTest {
 
     @InjectMocks
     private StudentServiceImpl studentService;
+
     @BeforeEach
-    public void setup() {
+    public void init() {
         MockitoAnnotations.initMocks(this);
     }
-
 
     // Método para crear una lista de estudiantes mock para pruebas
     @Test
@@ -80,30 +87,181 @@ public class StudentServiceImplTest {
         assertEquals(idProfesor, studentOutputDto.getIdProfesor());
         assertEquals(branch, studentOutputDto.getBranch());
     }
+
+    @Test
+    public void testConstructors() {
+        // Crear una instancia utilizando el constructor sin argumentos
+        StudentOutputDto studentOutputDto1 = new StudentOutputDto();
+        assertNotNull(studentOutputDto1);
+
+        // Crear una instancia utilizando el constructor con argumentos
+        StudentOutputDto studentOutputDto2 = new StudentOutputDto(1L, 2L, 10, "Comentario", 3L, "Branch");
+        assertNotNull(studentOutputDto2);
+
+        // Crear una instancia utilizando el constructor de copia
+        StudentOutputDto studentOutputDto3 = new StudentOutputDto(studentOutputDto2);
+        assertNotNull(studentOutputDto3);
+
+        // Verificar que los valores se han copiado correctamente
+        assertEquals(studentOutputDto2, studentOutputDto3);
+    }
+    @Test
+    public void testGettersAndSetters() {
+        // Crear una instancia
+        StudentOutputDto studentOutputDto = new StudentOutputDto();
+
+        // Configurar valores utilizando setters
+        studentOutputDto.setIdStudent(1L);
+        studentOutputDto.setIdPerson(2L);
+        studentOutputDto.setNum_hours_week(10);
+        studentOutputDto.setComents("Comentario");
+        studentOutputDto.setIdProfesor(3L);
+        studentOutputDto.setBranch("Branch");
+
+        // Verificar los valores utilizando getters
+        assertEquals(1L, studentOutputDto.getIdStudent().longValue());
+        assertEquals(2L, studentOutputDto.getIdPerson().longValue());
+        assertEquals(10, studentOutputDto.getNum_hours_week());
+        assertEquals("Comentario", studentOutputDto.getComents());
+        assertEquals(3L, studentOutputDto.getIdProfesor().longValue());
+        assertEquals("Branch", studentOutputDto.getBranch());
+    }
+
+    @Test
+    public void testGetAllStudent() {
+        // Configurar el comportamiento del mock para devolver una lista de estudiantes simulada
+        Person person = new Person(/*...*/);
+        Profesor profesor = new Profesor(/*...*/);
+        List<Asignatura> asignaturas = Arrays.asList(new Asignatura(/*...*/), new Asignatura(/*...*/));
+
+// Crear la instancia de Student
+        Student student1 = new Student();
+        student1.setNum_hours_week(20); // Asignar un valor para num_hours_week
+        student1.setComents("Comentario"); // Asignar un valor para coments
+        student1.setBranch("Frontend"); // Asignar un valor para branch
+        student1.setPerson(person); // Asignar la instancia de Person
+        student1.setProfesor(profesor); // Asignar la instancia de Profesor
+        student1.setAsignaturas(asignaturas); // Asignar la lista de Asignaturas
+        Student student2 = new Student();
+        student1.setNum_hours_week(20); // Asignar un valor para num_hours_week
+        student1.setComents("Comentario"); // Asignar un valor para coments
+        student1.setBranch("Frontend"); // Asignar un valor para branch
+        student1.setPerson(person); // Asignar la instancia de Person
+        student1.setProfesor(profesor); // Asignar la instancia de Profesor
+        student1.setAsignaturas(asignaturas); // Asignar la lista de Asignaturas
+        when(studentRepository.findAll()).thenReturn(Arrays.asList(student1, student2));
+
+        // Llamar al método que se va a probar
+        List<StudentOutputDto> result = studentService.getAllStudent();
+
+        // Verificar los resultados
+        assertEquals(2, result.size());
+        // Puedes agregar más aserciones según sea necesario
+    }
+
+
+    @Test
+    public void testGetStudentById() {
+        // Arrange
+        Long idStudent = 1L;
+        Student student = new Student(); // Puedes configurar este objeto según sea necesario
+        when(studentRepository.findById(idStudent)).thenReturn(Optional.of(student));
+
+        // Act
+        StudentOutputDto result = studentService.getStudentById(idStudent);
+
+        // Assert
+        // Realiza las aserciones necesarias, por ejemplo:
+        assertNotNull(result);
+        // Puedes agregar más aserciones según sea necesario
+    }
+    @Test
+    public void testAsignarAsignaturas() {
+        // Arrange
+        Long idStudent = 1L;
+        List<Long> idAsignaturas = Arrays.asList(101L, 102L); // IDs de asignaturas simuladas
+
+        Student student = new Student(); // Puedes configurar este objeto según sea necesario
+        when(studentRepository.findById(idStudent)).thenReturn(Optional.of(student));
+
+        List<Asignatura> asignaturas = Arrays.asList(
+                new Asignatura(101L, Arrays.asList(new Student(/*...*/), new Student(/*...*/)), "Matemáticas", "Comentario1", new Date(), null),
+                new Asignatura(102L, Arrays.asList(new Student(/*...*/), new Student(/*...*/)), "Historia", "Comentario2", new Date(), null)
+        ); // Puedes configurar estos objetos según sea necesario
+        when(asignaturaRepository.findAllById(idAsignaturas)).thenReturn(asignaturas);
+
+        // Act
+        String result = studentService.asignarAsignaturas(idStudent, idAsignaturas);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals("Asignaturas asignadas correctamente al estudiante con ID: " + idStudent, result);
+
+        // Realiza más aserciones según sea necesario, por ejemplo, verifica que las asignaturas se hayan agregado al estudiante
+        assertEquals(asignaturas.size(), student.getAsignaturas().size());
+        assertTrue(student.getAsignaturas().containsAll(asignaturas));
+    }
+    @Test
+    public void testDesasignarAsignaturas() {
+        // Arrange
+        Long idStudent = 1L;
+        List<Long> idAsignaturas = Arrays.asList(101L, 102L); // IDs de asignaturas simuladas
+
+        Student student = new Student(); // Puedes configurar este objeto según sea necesario
+        when(studentRepository.findById(idStudent)).thenReturn(Optional.of(student));
+
+        List<Asignatura> asignaturas = Arrays.asList(
+                new Asignatura(101L, new ArrayList<>(), "Matemáticas", "Comentario1", null, null),
+                new Asignatura(102L, new ArrayList<>(), "Historia", "Comentario2", null, null)
+        ); // Puedes configurar estos objetos según sea necesario
+        when(asignaturaRepository.findAllById(idAsignaturas)).thenReturn(asignaturas);
+
+        // Act
+        String result = studentService.desasignarAsignaturas(idStudent, idAsignaturas);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals("Asignaturas desasignadas correctamente del estudiante con ID: " + idStudent, result);
+
+        // Verifica que las asignaturas se hayan removido correctamente del estudiante
+        assertTrue(student.getAsignaturas().isEmpty());
+
+        // Puedes agregar más aserciones según sea necesario
+    }
     @Test
     public void testAddStudent() {
         // Arrange
-        StudentInputDto studentInputDto = new StudentInputDto(/* datos del estudiante */);
-        Person person = new Person(/* datos de la persona */);
-        Profesor profesor = new Profesor(/* datos del profesor */);
+        StudentInputDto studentInputDto = new StudentInputDto();
+        studentInputDto.setIdPerson(1L);  // Configura el ID de la persona según tus necesidades
+        studentInputDto.setIdProfesor(2L); // Configura el ID del profesor según tus necesidades
+        Person person = new Person(/* Configurar según sea necesario */);
+        Profesor profesor = new Profesor(/* Configurar según sea necesario */);
 
-        Mockito.when(personRepository.findById(any())).thenReturn(Optional.of(person));
-        Mockito.when(profesorRepository.findById(any())).thenReturn(Optional.of(profesor));
-        Mockito.when(profesorRepository.findByPerson(any(Person.class))).thenReturn(Optional.empty());
-        Mockito.when(studentRepository.findByPerson(any(Person.class))).thenReturn(Optional.empty());
-        Mockito.when(studentRepository.save(Mockito.any(Student.class))).thenReturn(new Student(/* datos del estudiante */));
-        // Aquí puedes personalizar la lógica según tus necesidade
+        when(personRepository.findById(studentInputDto.getIdPerson())).thenReturn(Optional.of(person));
+        when(profesorRepository.findById(studentInputDto.getIdProfesor())).thenReturn(Optional.of(profesor));
+        when(profesorRepository.findByPerson(person)).thenReturn(Optional.empty());
+        when(studentRepository.findByPerson(person)).thenReturn(Optional.empty());
 
-// Act - invocar el método que estamos probando
+        Student savedStudent = new Student(/* Configurar según sea necesario */);
+        when(studentRepository.save(any())).thenReturn(savedStudent);
+
+        // Act
         StudentOutputDto result = studentService.addStudent(studentInputDto);
 
         // Assert
-        // Verifica que se devuelva un resultado no nulo
-        Assert.assertNotNull(result);
-        // Puedes agregar más aserciones según las propiedades del objeto StudentOutputDto
+        assertNotNull(result);
 
-        // Verifica que se haya llamado al método save en el repositorio de estudiantes
-        verify(studentRepository, times(1)).save(any(Student.class));
-        // Puedes agregar más verificaciones según la lógica específica que esperas en tu aplicación
+        // Verifica que se haya llamado al método save del repositorio
+        verify(studentRepository, times(1)).save(any());
+
+        // Verifica que el profesor se haya actualizado con el nuevo estudiante
+        verify(profesorRepository, times(1)).save(profesor);
+        assertTrue(profesor.getStudents().contains(savedStudent));
+
+        // Puedes agregar más aserciones según sea necesario
     }
+
 }
+
+    // Puedes agregar más casos de prueba según sea necesario
+

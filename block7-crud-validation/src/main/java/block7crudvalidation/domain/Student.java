@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -39,7 +40,8 @@ public class Student {
 
     @ManyToMany
     @JoinColumn(name = "idAsignatura")
-    List<Asignatura> asignaturas;
+    List<Asignatura> asignaturas = new ArrayList<>();
+
 
 
 
@@ -50,13 +52,15 @@ public class Student {
     }
 
     public StudentOutputDto studentToStudentOutputDto() {
+        Long personId = (this.person != null) ? this.person.getIdPerson() : null;
+
         return new StudentOutputDto(
 
                 this.idStudent,
-                this.person.getIdPerson(),
+                personId,
                 this.num_hours_week,
                 this.coments,
-                this.profesor.getIdProfesor(),
+                (this.profesor != null) ? this.profesor.getIdProfesor() : null,
                 this.branch
         );
 
