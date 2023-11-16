@@ -1,41 +1,44 @@
-import org.springframework.beans.factory.annotation.Autowired;
+package com.Maven.block13mongodb.Maven.block13mongodb.controller;
+
+import com.Maven.block13mongodb.Maven.block13mongodb.domain.Persona;
+import com.Maven.block13mongodb.Maven.block13mongodb.service.PersonService;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/personas")
+@RequestMapping("/api/personas")
 public class PersonaController {
 
-    private final PersonaService personaService;
+    private final PersonService personService;
 
-    @Autowired
-    public PersonaController(PersonaService personaService) {
-        this.personaService = personaService;
+    public PersonaController(PersonService personService) {
+        this.personService = personService;
     }
 
     @PostMapping
-    public Persona crearPersona(@RequestBody Persona persona) {
-        return personaService.guardarPersona(persona);
+    public Persona guardarPersona(@RequestBody Persona persona) {
+        return personService.guardarPersona(persona);
     }
 
     @GetMapping
-    public Page<Persona> obtenerPersonas(@RequestParam(defaultValue = "0") int pagina,
-                                         @RequestParam(defaultValue = "10") int tamañoPagina) {
-        return personaService.obtenerPersonas(pagina, tamañoPagina);
+    public Page<Persona> obtenerPersonas(
+            @RequestParam(defaultValue = "0") int pagina,
+            @RequestParam(defaultValue = "10") int tamañoPagina) {
+        return personService.obtenerPersonas(pagina, tamañoPagina);
     }
 
     @GetMapping("/{id}")
-    public Persona obtenerPersonaPorId(@PathVariable String id) {
-        return personaService.obtenerPersonaPorId(id);
+    public Persona obtenerPersonaPorId(@PathVariable Long id) {
+        return personService.obtenerPersonaPorId(id);
     }
 
     @PutMapping("/{id}")
-    public Persona actualizarPersona(@PathVariable String id, @RequestBody Persona persona) {
-        return personaService.actualizarPersona(id, persona);
+    public Persona actualizarPersona(@PathVariable Long id, @RequestBody Persona persona) {
+        return personService.actualizarPersona(id, persona);
     }
 
     @DeleteMapping("/{id}")
-    public void eliminarPersona(@PathVariable String id) {
-        personaService.eliminarPersona(id);
+    public void eliminarPersona(@PathVariable Long id) {
+        personService.eliminarPersona(id);
     }
 }
