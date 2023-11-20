@@ -31,6 +31,7 @@ public class Main {
             if (person.getNombre() == null || !person.getNombre().startsWith("A")) {
                 filteredPeople.add(person);
             }
+
         }
         for (Person person : filteredPeople) {
             System.out.println(person);

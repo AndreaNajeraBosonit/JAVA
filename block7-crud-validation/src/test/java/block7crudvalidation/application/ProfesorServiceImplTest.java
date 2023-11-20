@@ -111,7 +111,7 @@ public class ProfesorServiceImplTest {
         Profesor profesor = new Profesor(/* datos del profesor */);
         Student student = new Student(/* datos del student */);
 
-        Person person = new Person(1L, "nombreUsuario", "contrasena", "nombre", "apellido", "emailEmpresa", "emailPersonal",
+        Person person = new Person(1L, "nombreUsuario",true, "contrasena", "nombre", "apellido", "emailEmpresa", "emailPersonal",
                 "ciudad", true, new Date(), "urlImagen", new Date(), profesor, student);
 
         // Configuración del comportamiento simulado del repositorio

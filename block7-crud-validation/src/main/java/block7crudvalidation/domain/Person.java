@@ -2,16 +2,28 @@ package block7crudvalidation.domain;
 
 import block7crudvalidation.controller.dto.PersonInputDto;
 import block7crudvalidation.controller.dto.PersonOutputDto;
+import block7crudvalidation.security.Role;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import lombok.Builder;
 
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Setter
 @Getter
 @NoArgsConstructor
-public class Person {
+@AllArgsConstructor
+@Builder
+@Data
+@Table(name = "person")
+
+public class Person implements UserDetails {
     @Id
     @GeneratedValue
     Long idPerson;
@@ -21,8 +33,13 @@ public class Person {
   //  @NotEmpty
     String usuario;
 
+
+    @Column(name = "username")
+    private String username;
     String password;
 
+
+@Column(name = "name")
     String name;
 
     String surname;
@@ -44,6 +61,7 @@ public class Person {
 
     Date termination_date;
 
+Role role;
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "person")
     Profesor profesor;
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "person")
@@ -67,9 +85,10 @@ public class Person {
 
     }
 
-    public Person(Long idPerson, String usuario, String password, String name, String surname, String company_email, String personal_email, String city, Boolean active, Date created_date, String imagen_url, Date termination_date, Profesor profesor, Student student) {
+    public Person(Long idPerson, String usuario, String username, String password, String name, String surname, String company_email, String personal_email, String city, Boolean active, Date created_date, String imagen_url, Date termination_date, Profesor profesor, Student student) {
         this.idPerson = idPerson;
         this.usuario = usuario;
+        this.username = username;
         this.password = password;
         this.name = name;
         this.surname = surname;
@@ -90,6 +109,7 @@ public class Person {
         return new PersonOutputDto(
                 this.idPerson,
                 this.usuario,
+                this.username,
                 this.password,
                 this.name,
                 this.surname,
@@ -104,10 +124,35 @@ public class Person {
                 this.student==null?null:student.getIdStudent()
                 );
 
-        //
+    }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role.name()));    }
 
+    @Override
+    public String getUsername() {
+        return username;
+    }
 
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }
 

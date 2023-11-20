@@ -5,12 +5,15 @@ import block7crudvalidation.application.PersonService;
 import block7crudvalidation.controller.dto.PersonInputDto;
 import block7crudvalidation.controller.dto.PersonOutputDto;
 import block7crudvalidation.controller.dto.ProfesorOutputDto;
+import block7crudvalidation.domain.Person;
+import block7crudvalidation.repository.PersonRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -25,7 +28,8 @@ public class ControllerPersona {
     PersonService personService;
     @Autowired
     RestTemplate restTemplate;
-
+    @Autowired
+    PersonRepository personRepository;
     @Autowired
     ProfesorFeignClient profesorFeignClient;
 

@@ -1,15 +1,22 @@
 package block7crudvalidation.controller.dto;
 
+import jakarta.persistence.Entity;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
 @NoArgsConstructor
 
+@Data
+@Builder
 
 public class PersonInputDto {
     Long idPerson;
     String usuario;
+    String admin;
     String password;
     String name;
     String surname;
@@ -22,9 +29,10 @@ public class PersonInputDto {
     Date termination_date;
 
 
-    public PersonInputDto(Long idPerson, String usuario, String password, String name, String surname, String company_email, String personal_email, String city, Boolean active, Date created_date, String imagen_url, Date termination_date) {
+    public PersonInputDto(Long idPerson, String usuario,String admin, String password, String name, String surname, String company_email, String personal_email, String city, Boolean active, Date created_date, String imagen_url, Date termination_date) {
         this.idPerson = idPerson;
         this.usuario = usuario;
+        this.admin=admin;
         this.password = password;
         this.name = name;
         this.surname = surname;
