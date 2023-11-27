@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  eureka-naming-server:
+    build:
+      context: ./eureka-naming-server
+    ports:
+      - "8761:8761"
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - eureka-naming-server
+
+  backend-front:
+    build:
+      context: ./backend-front
+    ports:
+      - "8081:8081"
+    depends_on:
+      - eureka-naming-server
+
+  trip-backend:
+    build:
+      context: ./trip-backend
+    ports:
+      - "8082:8082"
+    depends_on:
+      - eureka-naming-server
